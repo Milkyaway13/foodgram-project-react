@@ -186,29 +186,25 @@ class IngredientSerializer(serializers.ModelSerializer):
 
 
 class RecipeIngredientSerializer(serializers.ModelSerializer):
-    """Ингредиенты для рецепта."""
-
-    id = serializers.PrimaryKeyRelatedField(
-        queryset=Ingredient.objects.all(),
-        required=True
-    )
-    amount = serializers.IntegerField(max_value=1)
+    """Список ингредиентов с количеством для рецепта."""
+    id = serializers.ReadOnlyField(source='ingredient.id')
+    name = serializers.ReadOnlyField(source='ingredient.name')
+    measurement_unit = serializers.ReadOnlyField(
+        source='ingredient.measurement_unit')
 
     class Meta:
-        model = RecipeIngredient
-        fields = (
-            'id',
-            'amount',
-        )
+        model = Recipe_ingredient
+        fields = ('id', 'name',
+                  'measurement_unit', 'amount')
 
 
 class RecipeReadSerializer(serializers.ModelSerializer):
     """Сериалайзер для списка рецептов."""
 
     author = UserCreateSerializer(read_only=True)
-    tags = TagSerializer(many=True)
+    tags = TagSerializer(many=True, read_only=True)
     ingredients = RecipeIngredientSerializer(
-        many=True, source="recipe_ingredients")
+        many=True, source="recipes", read_only-True)
     image = Base64ImageField()
     is_in_shopping_cart = serializers.SerializerMethodField()
     is_favorited = serializers.SerializerMethodField()
@@ -269,10 +265,6 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
     tags = serializers.PrimaryKeyRelatedField(
         many=True, queryset=Tag.objects.all()
     )
-    is_favorited = serializers.SerializerMethodField(
-        method_name='get_is_favorited')
-    is_in_shopping_cart = serializers.SerializerMethodField(
-        method_name='get_is_in_shopping_cart')
     ingredients = RecipeIngredientCreateSerializer(many=True)
     image = Base64ImageField()
     cooking_time = serializers.IntegerField(min_value=1)
@@ -285,8 +277,6 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
             'image',
             'author',
             'ingredients',
-            'is_favorited',
-            'is_in_shopping_cart',
             'name',
             'text',
             'cooking_time'
