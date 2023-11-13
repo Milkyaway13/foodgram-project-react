@@ -13,7 +13,7 @@ class Tag(models.Model):
         validators=(
             validators.RegexValidator(
                 regex=r'^[-a-zA-Z0-9_]+$',
-                message='Некорректное имя тэга',
+                message='Некорректное имя слага',
             ),
         ),
         max_length=200,
@@ -80,28 +80,7 @@ class Recipe(models.Model):
         ordering = ('-id',)
 
     def __str__(self):
-        return self.name 
-    
-
-class RecipeTag(models.Model):
-    recipe = models.ForeignKey(
-        Recipe,
-        on_delete=models.CASCADE,
-        related_name='recipe_recipetags',
-        verbose_name='Рецепт'
-    )
-    tag = models.ForeignKey(
-        Tag,
-        on_delete=models.CASCADE,
-        verbose_name='Тег'
-    )
-
-    class Meta:
-        ordering = ['-tag']
-        constraints = [
-            models.UniqueConstraint(fields=['recipe', 'tag'],
-                                    name='recipe_tag_unique')
-        ]    
+        return self.name  
 
 
 class RecipeIngredient(models.Model):
@@ -110,25 +89,33 @@ class RecipeIngredient(models.Model):
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
-        related_name='recipe_recipeingredients',
+        related_name='recipe',
         verbose_name='Рецепт'
     )
     ingredient = models.ForeignKey(
         Ingredient,
         on_delete=models.CASCADE,
         blank=True,
-        verbose_name='Ингредиент'
+        verbose_name='Ингредиент',
+        related_name='ingredients'
     )
     amount = models.PositiveSmallIntegerField(
         blank=True,
         null=True,
-        verbose_name='Количество'
+        verbose_name='Количество',
+        validators=[MinValueValidator(1)]
     )
 
     class Meta:
-        verbose_name = 'Количество ингредиента'
-        verbose_name_plural = 'Количество ингредиентов'
+        verbose_name = 'Ингредиенты в рецепте'
+        verbose_name_plural = 'Ингредиенты в рецептах'
         ordering = ('recipe',)
+        constraints = [
+            models.UniqueConstraint(
+                fields=['recipe', 'ingredient'],
+                name='unique_combination'
+            )
+        ]
 
     def __str__(self):
         return f'{self.recipe} - {self.ingredient}, {self.amount}'
