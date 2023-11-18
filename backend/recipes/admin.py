@@ -1,15 +1,11 @@
 from django.contrib import admin
+from django.utils.safestring import mark_safe
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
-from django.utils.safestring import mark_safe
 
 from .models import (
-    Favorite,
-    Ingredient,
-    Recipe,
-    RecipeIngredient,
-    ShoppingCart,
-    Tag,
+    Favorite, Ingredient, Recipe,
+    RecipeIngredient, ShoppingCart, Tag
 )
 
 
@@ -50,7 +46,7 @@ class RecipeAdmin(admin.ModelAdmin):
         "author",
         "ingredients_list",
         "favorites_count",
-        "image"
+        "image",
     )
     list_editable = (
         "cooking_time",
@@ -64,11 +60,13 @@ class RecipeAdmin(admin.ModelAdmin):
     empty_value_display = "-пусто-"
 
     def ingredients_list(self, obj):
-        return ', '.join((str(ingredient) for ingredient
-                          in obj.ingredients.all()))
+        return (
+            ", ".join((str(ingredient)
+                       for ingredient in obj.ingredients.all()))
+        )
 
     def favorites_count(self, obj):
-        return obj.favourites_recipe.count()
+        return obj.recipe_favorites.count()
 
     def image(self, obj):
         return mark_safe(f'<img src={obj.image.url} width="80" height="60">')

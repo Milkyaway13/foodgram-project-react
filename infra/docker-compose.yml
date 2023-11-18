@@ -22,17 +22,17 @@ services:
       - ../frontend/build:/usr/share/nginx/html/
       - ../docs/:/usr/share/nginx/html/api/docs/
       - static:/staticfiles/
-      - media:/media
+      - media:/app/media
   db:
     image: postgres:13.10
-    env_file: .env
+    env_file: ../.env
     volumes:
       - db:/var/lib/postgresql/data
   backend:
     build: ../backend/
-    env_file: .env
+    env_file: ../.env
     volumes:
       - static:/backend_static/
-      - media:/media/
+      - media:/app/media/
     depends_on:
       - db    
