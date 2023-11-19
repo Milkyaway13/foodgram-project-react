@@ -61,7 +61,8 @@ class Command(BaseCommand):
                 self.stdout.write(self.style.NOTICE(MSG_NO_CHANGES))
             else:
                 self.stdout.write(
-                    self.style.SUCCESS(MSG_SUCCESSFUL + f" {count_rows} rows added.")
+                    self.style.SUCCESS(
+                        MSG_SUCCESSFUL + f" {count_rows} rows added.")
                 )
         except FileNotFoundError:
             self.stdout.write(self.style.ERROR(MSG_UNSUCCESSFUL))
