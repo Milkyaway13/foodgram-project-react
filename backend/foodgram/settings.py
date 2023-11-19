@@ -13,7 +13,7 @@ SECRET_KEY = os.getenv("SECRET_KEY", default="token")
 
 DEBUG = os.getenv("DEBUG", default=False) == "True"
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOST', default='localhost').split(', ')
 
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 2300
 

@@ -46,7 +46,8 @@ class Ingredient(models.Model):
 
 class Recipe(models.Model):
     author = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="recipes", verbose_name="Автор"
+        User, on_delete=models.CASCADE,
+        related_name="recipes", verbose_name="Автор"
     )
     name = models.CharField("Название рецепта", max_length=200)
     image = models.ImageField("Картинка", upload_to="recipes/", blank=True)
@@ -59,7 +60,8 @@ class Recipe(models.Model):
     )
     tags = models.ManyToManyField(Tag, verbose_name="Теги")
     cooking_time = models.IntegerField(
-        "Время приготовления, мин", validators=[validators.MinLengthValidator(1)]
+        "Время приготовления, мин",
+        validators=[validators.MinLengthValidator(1)]
     )
     pub_date = models.DateTimeField("Дата публикации", auto_now_add=True)
 
@@ -76,7 +78,8 @@ class RecipeIngredient(models.Model):
     """Модель количества ингредиентов."""
 
     recipe = models.ForeignKey(
-        Recipe, on_delete=models.CASCADE, related_name="recipe", verbose_name="Рецепт"
+        Recipe, on_delete=models.CASCADE,
+        related_name="recipe", verbose_name="Рецепт"
     )
     ingredient = models.ForeignKey(
         Ingredient,

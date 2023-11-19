@@ -219,7 +219,9 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
     """Создание, изменение и удаление рецепта."""
 
     author = UserCreateSerializer(read_only=True)
-    tags = serializers.PrimaryKeyRelatedField(many=True, queryset=Tag.objects.all())
+    tags = serializers.PrimaryKeyRelatedField(
+        many=True, queryset=Tag.objects.all()
+    )
     ingredients = RecipeIngredientCreateSerializer(many=True)
     image = Base64ImageField()
     cooking_time = serializers.IntegerField(min_value=1)
@@ -245,15 +247,21 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Теги должны быть уникальными.")
         for field in ["name", "text", "cooking_time"]:
             if not obj.get(field):
-                raise serializers.ValidationError(f"{field} - Обязательное поле.")
+                raise serializers.ValidationError(
+                    f"{field} - Обязательное поле."
+                )
         if not obj.get("tags"):
             raise serializers.ValidationError("Нужно указать минимум 1 тег.")
         if not obj.get("ingredients"):
-            raise serializers.ValidationError("Нужно указать минимум 1 ингредиент.")
+            raise serializers.ValidationError(
+                "Нужно указать минимум 1 ингредиент."
+            )
         inrgedient_id_list = [item["id"] for item in obj.get("ingredients")]
         unique_ingredient_id_list = set(inrgedient_id_list)
         if len(inrgedient_id_list) != len(unique_ingredient_id_list):
-            raise serializers.ValidationError("Ингредиенты должны быть уникальны.")
+            raise serializers.ValidationError(
+                "Ингредиенты должны быть уникальны."
+            )
         return obj
 
     def tags_and_ingredients_set(self, recipe, tags, ingredients):

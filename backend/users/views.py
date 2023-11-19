@@ -34,7 +34,9 @@ class CustomUserViewSet(UserViewSet):
     )
     def subscriptions(self, request):
         subscriptions = Subscribe.objects.filter(subscriber=request.user)
-        subscribing_users = CustomUser.objects.filter(subscribing__in=subscriptions)
+        subscribing_users = CustomUser.objects.filter(
+            subscribing__in=subscriptions
+        )
         serializer = SubscribeSerializer(
             self.paginate_queryset(subscribing_users),
             many=True,
@@ -43,7 +45,8 @@ class CustomUserViewSet(UserViewSet):
         return self.get_paginated_response(serializer.data)
 
     @action(
-        detail=True, methods=("post", "delete"), permission_classes=(IsAuthenticated,)
+        detail=True, methods=("post", "delete"),
+        permission_classes=(IsAuthenticated,)
     )
     def subscribe(self, request, **kwargs):
         author_id = self.kwargs.get("id")
@@ -68,13 +71,18 @@ class CustomUserViewSet(UserViewSet):
                         status=status.HTTP_400_BAD_REQUEST,
                     )
 
-                Subscribe.objects.create(subscriber=request.user, author=author)
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
+                Subscribe.objects.create(
+                    subscriber=request.user, author=author
+                )
+                return Response(serializer.data,
+                                status=status.HTTP_201_CREATED
+                                )
 
         if request.method == "DELETE":
             get_object_or_404(
                 Subscribe, subscriber=request.user, author=author
             ).delete()
             return Response(
-                {"detail": "Успешная отписка"}, status=status.HTTP_204_NO_CONTENT
+                {"detail": "Успешная отписка"},
+                status=status.HTTP_204_NO_CONTENT
             )
