@@ -15,15 +15,10 @@ from recipes.models import Favorite, Ingredient, Recipe, ShoppingCart, Tag
 from .filters import IngredientFilter, RecipeFilter
 from .pagination import PageLimitPagination
 from .permissions import IsAuthorOrReadOnly
-from .serializers import (
-    FavoriteSerializer,
-    IngredientSerializer,
-    RecipeCreateSerializer,
-    RecipeIngredient,
-    RecipeReadSerializer,
-    RecipeSmallSerializer,
-    TagSerializer,
-)
+from .serializers import (FavoriteSerializer, IngredientSerializer,
+                          RecipeCreateSerializer, RecipeIngredient,
+                          RecipeReadSerializer, RecipeSmallSerializer,
+                          TagSerializer)
 
 
 class TagViewSet(
