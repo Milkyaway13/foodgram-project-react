@@ -4,12 +4,13 @@ from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from foodgram.settings import FILE_NAME
-from recipes.models import Favorite, Ingredient, Recipe, ShoppingCart, Tag
 from rest_framework import filters, mixins, permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+
+from foodgram.settings import FILE_NAME
+from recipes.models import Favorite, Ingredient, Recipe, ShoppingCart, Tag
 
 from .filters import IngredientFilter, RecipeFilter
 from .pagination import PageLimitPagination
@@ -87,17 +88,16 @@ class RecipeViewSet(viewsets.ModelViewSet):
             serializer.save()
             return Response(serializer.data, status=HTTPStatus.CREATED)
 
-        if request.method == "DELETE":
-            if not Favorite.objects.filter(user=user, recipe=recipe).exists():
-                return Response(
-                    "Рецепта нет в избранном.",
-                    status=HTTPStatus.NOT_FOUND,
-                )
-            Favorite.objects.filter(user=user, recipe=recipe).delete()
+        if not Favorite.objects.filter(user=user, recipe=recipe).exists():
             return Response(
-                "Рецепт успешно удалён из избранного.",
-                status=HTTPStatus.NO_CONTENT
+                "Рецепта нет в избранном.",
+                status=HTTPStatus.NOT_FOUND,
             )
+        Favorite.objects.filter(user=user, recipe=recipe).delete()
+        return Response(
+            "Рецепт успешно удалён из избранного.",
+            status=HTTPStatus.NO_CONTENT,
+        )
 
     @action(
         ("post", "delete"),
@@ -124,15 +124,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        if request.method == "DELETE":
-            get_object_or_404(
-                ShoppingCart, user=request.user,
-                recipe=recipe
-            ).delete()
-            return Response(
-                {"detail": "Рецепт успешно удален из списка покупок."},
-                status=status.HTTP_204_NO_CONTENT,
-            )
+        get_object_or_404(
+            ShoppingCart, user=request.user, recipe=recipe
+        ).delete()
+        return Response(
+            {"detail": "Рецепт успешно удален из списка покупок."},
+            status=status.HTTP_204_NO_CONTENT,
+        )
 
     @action(
         detail=False,
@@ -144,11 +142,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
             RecipeIngredient.objects.filter(
                 recipe__shopping_recipe__user=request.user
             )
-            .values("ingredient")
+            .select_related("ingredient")
             .annotate(total_amount=Sum("amount"))
             .values_list(
-                "ingredient__name", "total_amount",
-                "ingredient__measurement_unit"
+                "ingredient__name",
+                "total_amount",
+                "ingredient__measurement_unit",
             )
         )
         file_list = []
@@ -158,7 +157,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         ]
         file = HttpResponse(
             "Cписок покупок:\n" + "\n".join(file_list),
-            content_type="text/plain"
+            content_type="text/plain",
         )
         file["Content-Disposition"] = f"attachment; filename={FILE_NAME}"
         return file

@@ -13,7 +13,7 @@ SECRET_KEY = os.getenv("SECRET_KEY", default="token")
 
 DEBUG = os.getenv("DEBUG", default=False) == "True"
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOST', default='localhost').split(', ')
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", default="localhost").split(",")
 
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 2300
 
@@ -81,6 +81,7 @@ DATABASES = {
         "PORT": os.getenv("DB_PORT"),
     }
 }
+
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 

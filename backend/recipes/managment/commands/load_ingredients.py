@@ -3,6 +3,7 @@ import os
 
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
+
 from recipes.models import Ingredient
 
 DEFAULT_IMPORT_FOLDER_NAME = "data"
@@ -62,7 +63,8 @@ class Command(BaseCommand):
             else:
                 self.stdout.write(
                     self.style.SUCCESS(
-                        MSG_SUCCESSFUL + f" {count_rows} rows added.")
+                        MSG_SUCCESSFUL + f" {count_rows} rows added."
+                    )
                 )
         except FileNotFoundError:
             self.stdout.write(self.style.ERROR(MSG_UNSUCCESSFUL))

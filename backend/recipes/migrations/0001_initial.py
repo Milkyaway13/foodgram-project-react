@@ -27,10 +27,15 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("name", models.CharField(max_length=200, verbose_name="Название")),
+                (
+                    "name",
+                    models.CharField(max_length=200, verbose_name="Название"),
+                ),
                 (
                     "measurement_unit",
-                    models.CharField(max_length=200, verbose_name="Единица измерения"),
+                    models.CharField(
+                        max_length=200, verbose_name="Единица измерения"
+                    ),
                 ),
             ],
             options={
@@ -53,19 +58,25 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "name",
-                    models.CharField(max_length=200, verbose_name="Название рецепта"),
+                    models.CharField(
+                        max_length=200, verbose_name="Название рецепта"
+                    ),
                 ),
                 (
                     "image",
                     models.ImageField(
-                        blank=True, upload_to="recipes/", verbose_name="Картинка"
+                        blank=True,
+                        upload_to="recipes/",
+                        verbose_name="Картинка",
                     ),
                 ),
                 ("text", models.TextField(verbose_name="Описание")),
                 (
                     "cooking_time",
                     models.IntegerField(
-                        validators=[django.core.validators.MinLengthValidator(1)],
+                        validators=[
+                            django.core.validators.MinLengthValidator(1)
+                        ],
                         verbose_name="Время приготовления, мин",
                     ),
                 ),
@@ -106,7 +117,9 @@ class Migration(migrations.Migration):
                 (
                     "name",
                     models.CharField(
-                        max_length=200, unique=True, verbose_name="Название тега"
+                        max_length=200,
+                        unique=True,
+                        verbose_name="Название тега",
                     ),
                 ),
                 (
@@ -194,7 +207,9 @@ class Migration(migrations.Migration):
                     models.PositiveSmallIntegerField(
                         blank=True,
                         null=True,
-                        validators=[django.core.validators.MinValueValidator(1)],
+                        validators=[
+                            django.core.validators.MinValueValidator(1)
+                        ],
                         verbose_name="Количество",
                     ),
                 ),
@@ -237,7 +252,9 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="recipe",
             name="tags",
-            field=models.ManyToManyField(to="recipes.Tag", verbose_name="Теги"),
+            field=models.ManyToManyField(
+                to="recipes.Tag", verbose_name="Теги"
+            ),
         ),
         migrations.CreateModel(
             name="Favorite",

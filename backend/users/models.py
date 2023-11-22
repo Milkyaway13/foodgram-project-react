@@ -25,7 +25,7 @@ class CustomUser(AbstractUser):
         max_length=254,
         verbose_name="E-mail",
         help_text="Укажите e-mail",
-        unique=True
+        unique=True,
     )
     first_name = models.CharField(
         max_length=150, verbose_name="Имя", help_text="Ваше Имя"
@@ -63,14 +63,15 @@ class Subscribe(models.Model):
     )
 
     class Meta:
-        verbose_name = "Подписки"
+        verbose_name = "Подписка"
+        verbose_name_plural = "Подписки"
         constraints = [
             models.UniqueConstraint(
                 fields=("subscriber", "author"), name="unique_follow"
             ),
             models.CheckConstraint(
                 check=~models.Q(subscriber=models.F("author")),
-                name="self_follow"
+                name="self_follow",
             ),
         ]
 

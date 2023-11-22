@@ -1,6 +1,10 @@
 from django.db.models import F
 from djoser.serializers import UserCreateSerializer
 from drf_base64.fields import Base64ImageField
+from rest_framework import serializers
+from rest_framework.fields import SerializerMethodField
+from rest_framework.validators import UniqueTogetherValidator
+
 from recipes.models import (
     Favorite,
     Ingredient,
@@ -9,9 +13,6 @@ from recipes.models import (
     ShoppingCart,
     Tag,
 )
-from rest_framework import serializers
-from rest_framework.fields import SerializerMethodField
-from rest_framework.validators import UniqueTogetherValidator
 from users.models import CustomUser, Subscribe
 
 

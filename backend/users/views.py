@@ -1,11 +1,12 @@
-from api.pagination import PageLimitPagination
-from api.serializers import SubscribeSerializer, UserReadSerializer
 from django.shortcuts import get_object_or_404
 from djoser.views import UserViewSet
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+
+from api.pagination import PageLimitPagination
+from api.serializers import SubscribeSerializer, UserReadSerializer
 
 from .models import CustomUser, Subscribe
 
@@ -18,7 +19,7 @@ class CustomUserViewSet(UserViewSet):
 
     @action(
         detail=False,
-        methods=["get"],
+        methods=("get",),
         pagination_class=None,
         permission_classes=(IsAuthenticated,),
     )
@@ -45,8 +46,9 @@ class CustomUserViewSet(UserViewSet):
         return self.get_paginated_response(serializer.data)
 
     @action(
-        detail=True, methods=("post", "delete"),
-        permission_classes=(IsAuthenticated,)
+        detail=True,
+        methods=("post", "delete"),
+        permission_classes=(IsAuthenticated,),
     )
     def subscribe(self, request, **kwargs):
         author_id = self.kwargs.get("id")
@@ -74,15 +76,13 @@ class CustomUserViewSet(UserViewSet):
                 Subscribe.objects.create(
                     subscriber=request.user, author=author
                 )
-                return Response(serializer.data,
-                                status=status.HTTP_201_CREATED
-                                )
+                return Response(
+                    serializer.data, status=status.HTTP_201_CREATED
+                )
 
-        if request.method == "DELETE":
-            get_object_or_404(
-                Subscribe, subscriber=request.user, author=author
-            ).delete()
-            return Response(
-                {"detail": "Успешная отписка"},
-                status=status.HTTP_204_NO_CONTENT
-            )
+        get_object_or_404(
+            Subscribe, subscriber=request.user, author=author
+        ).delete()
+        return Response(
+            {"detail": "Успешная отписка"}, status=status.HTTP_204_NO_CONTENT
+        )

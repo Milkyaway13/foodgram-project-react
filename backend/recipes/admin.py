@@ -4,8 +4,12 @@ from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 
 from .models import (
-    Favorite, Ingredient, Recipe,
-    RecipeIngredient, ShoppingCart, Tag
+    Favorite,
+    Ingredient,
+    Recipe,
+    RecipeIngredient,
+    ShoppingCart,
+    Tag,
 )
 
 
@@ -60,9 +64,8 @@ class RecipeAdmin(admin.ModelAdmin):
     empty_value_display = "-пусто-"
 
     def ingredients_list(self, obj):
-        return (
-            ", ".join((str(ingredient)
-                       for ingredient in obj.ingredients.all()))
+        return ", ".join(
+            (str(ingredient) for ingredient in obj.ingredients.all())
         )
 
     def favorites_count(self, obj):

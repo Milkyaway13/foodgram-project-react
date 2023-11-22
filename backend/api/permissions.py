@@ -20,8 +20,7 @@ class IsAuthorOrReadOnly(permissions.BasePermission):
 class IsAdminOrReadOnly(permissions.BasePermission):
     def has_permission(self, request, view):
         return (
-            request.method in permissions.SAFE_METHODS
-            or request.user.is_staff
+            request.method in permissions.SAFE_METHODS or request.user.is_staff
         )
 
     def has_object_permission(self, request, view, obj):

@@ -46,8 +46,10 @@ class Ingredient(models.Model):
 
 class Recipe(models.Model):
     author = models.ForeignKey(
-        User, on_delete=models.CASCADE,
-        related_name="recipes", verbose_name="Автор"
+        User,
+        on_delete=models.CASCADE,
+        related_name="recipes",
+        verbose_name="Автор",
     )
     name = models.CharField("Название рецепта", max_length=200)
     image = models.ImageField("Картинка", upload_to="recipes/", blank=True)
@@ -61,7 +63,7 @@ class Recipe(models.Model):
     tags = models.ManyToManyField(Tag, verbose_name="Теги")
     cooking_time = models.IntegerField(
         "Время приготовления, мин",
-        validators=[validators.MinLengthValidator(1)]
+        validators=(validators.MinLengthValidator(1),),
     )
     pub_date = models.DateTimeField("Дата публикации", auto_now_add=True)
 
@@ -78,8 +80,10 @@ class RecipeIngredient(models.Model):
     """Модель количества ингредиентов."""
 
     recipe = models.ForeignKey(
-        Recipe, on_delete=models.CASCADE,
-        related_name="recipe", verbose_name="Рецепт"
+        Recipe,
+        on_delete=models.CASCADE,
+        related_name="recipe",
+        verbose_name="Рецепт",
     )
     ingredient = models.ForeignKey(
         Ingredient,
@@ -88,18 +92,18 @@ class RecipeIngredient(models.Model):
         related_name="ingredients",
     )
     amount = models.PositiveSmallIntegerField(
-        verbose_name="Количество", validators=[validators.MinValueValidator(1)]
+        verbose_name="Количество",
+        validators=(validators.MinValueValidator(1),),
     )
 
     class Meta:
         verbose_name = "Ингредиенты в рецепте"
         verbose_name_plural = "Ингредиенты в рецептах"
         ordering = ("recipe",)
-        constraints = [
-            models.UniqueConstraint(
-                fields=["recipe", "ingredient"], name="unique_combination"
-            )
-        ]
+        constraints = (models.UniqueConstraint(
+            fields=("recipe", "ingredient"), name="unique_combination"
+        ),
+        )
 
     def __str__(self):
         return f"{self.recipe} - {self.ingredient}, {self.amount}"
@@ -128,9 +132,9 @@ class Favorite(models.Model):
             models.UniqueConstraint(
                 fields=(
                     "recipe",
-                    "user",
+                    "user"
                 ),
-                name="favorite_unique",
+                name="favorite_unique"
             ),
         )
 
@@ -161,9 +165,9 @@ class ShoppingCart(models.Model):
             models.UniqueConstraint(
                 fields=(
                     "recipe",
-                    "user",
+                    "user"
                 ),
-                name="shopping_cart_unique",
+                name="shopping_cart_unique"
             ),
         )
 

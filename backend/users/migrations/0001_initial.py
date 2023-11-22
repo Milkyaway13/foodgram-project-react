@@ -61,7 +61,8 @@ class Migration(migrations.Migration):
                 (
                     "date_joined",
                     models.DateTimeField(
-                        default=django.utils.timezone.now, verbose_name="date joined"
+                        default=django.utils.timezone.now,
+                        verbose_name="date joined",
                     ),
                 ),
                 (
@@ -73,7 +74,8 @@ class Migration(migrations.Migration):
                         unique=True,
                         validators=[
                             django.core.validators.RegexValidator(
-                                message="Username doesnt comply", regex="^[\\w.@+-]+\\Z"
+                                message="Username doesnt comply",
+                                regex="^[\\w.@+-]+\\Z",
                             )
                         ],
                         verbose_name="Логин",
