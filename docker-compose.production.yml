@@ -20,12 +20,12 @@ services:
       - media:/app/media
   db:
     image: postgres:13.10
-    env_file: ../.env
+    env_file: .env
     volumes:
       - db:/var/lib/postgresql/data
   backend:
     image: milkyaway13/foodgram_backend
-    env_file: ../.env
+    env_file: .env
     volumes:
       - static:/backend_static/
       - media:/app/media/
