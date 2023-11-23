@@ -1,33 +1,36 @@
-version: '3.3'
+version: '3'
 
 volumes:
-  db:
+  pg_data:
   static:
   media:
 
 services:
-
-  frontend:
-    image: milkyaway13/foodgram_frontend
-    volumes:
-      - ../frontend/:/app/result_build/
-  nginx:
-    image: milkyaway13/foodgram_nginx
-    ports:
-      - "8080:80"
-    volumes:
-      - static:/staticfiles/
-      - media:/app/media
   db:
-    image: postgres:13.10
+    image: postgres:13
     env_file: .env
     volumes:
-      - db:/var/lib/postgresql/data
+      - pg_data:/var/lib/postgresql/data
   backend:
     image: milkyaway13/foodgram_backend
     env_file: .env
     volumes:
-      - static:/backend_static/
-      - media:/app/media/
+      - static:/backend_static
+      - media:/app/media
     depends_on:
-      - db    
+      - db
+  frontend:
+    image: milkyaway13/foodgram_frontend
+    command: cp -r /app/build/. /frontend_static/
+    volumes:
+      - static:/frontend_static
+  nginx:
+    image: milkyaway13/foodgram_nginx
+    ports:
+      - 8080:80
+    volumes:
+      - static:/static
+      - media:/media
+    depends_on:
+      - backend
+      - frontend
