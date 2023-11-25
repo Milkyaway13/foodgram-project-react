@@ -65,15 +65,15 @@ class Subscribe(models.Model):
     class Meta:
         verbose_name = "Подписка"
         verbose_name_plural = "Подписки"
-        constraints = [
+        constraints = (
             models.UniqueConstraint(
                 fields=("subscriber", "author"), name="unique_follow"
             ),
             models.CheckConstraint(
                 check=~models.Q(subscriber=models.F("author")),
                 name="self_follow",
-            ),
-        ]
+            )
+        )
 
     def __str__(self):
         return f"{self.subscriber} подписался на  {self.author}"
